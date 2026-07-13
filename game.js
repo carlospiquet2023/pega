@@ -285,10 +285,12 @@ function activatePowerup(type){
             G.shieldActive=true;G.shieldTimer=type.duration;G.shieldHits=3;
             announce('🛡️ ESCUDO ATIVADO!','#00ff88',90);
             break;
+        case 'Munição':
         case 'Laser':
             G.laserActive=true;G.laserAmmo=10;
             announce('🔫 LASER! 10 tiros — Clique!','#ff0000',90);
             break;
+        case 'Vida':
         case 'Vida Extra':
             if(G.lives<3){G.lives++;updateLives();}
             G.score+=100;
