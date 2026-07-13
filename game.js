@@ -4,8 +4,13 @@
    ═══════════════════════════════════════════════════════════════ */
 
 const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+const ctx = canvas.getContext('2d', { alpha: false });
+function resize(){
+    canvas.width=window.innerWidth;
+    let ch = window.innerHeight;
+    if(window.innerWidth <= 768) ch -= 70; // Discount inventory bar height on mobile
+    canvas.height = ch;
+}
 resize(); window.addEventListener('resize',resize);
 
 // ─── MOUSE & TOUCH ───

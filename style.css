@@ -539,6 +539,13 @@ canvas {
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.inv-slot:active {
+    transform: scale(0.9);
 }
 
 .inv-slot.active {
@@ -601,6 +608,19 @@ canvas {
 
 /* Celular grande */
 @media (max-width: 768px) {
+    canvas { height: calc(100vh - 70px); }
+    #inventoryUI {
+        bottom: 0;
+        width: 100vw;
+        background: #050510;
+        border-top: 2px solid rgba(0, 255, 255, 0.3);
+        padding: 10px 0;
+        gap: 8px;
+        z-index: 200;
+        pointer-events: auto;
+    }
+    .inv-slot { width: 45px; height: 45px; font-size: 1.3rem; border-color: rgba(255, 255, 255, 0.2); }
+    
     .btn-neon { padding: 12px 40px; font-size: 1rem; }
     #hud { padding: 10px 15px; }
     .hud-center { position: relative; left: auto; transform: none; width: 100%; display: flex; justify-content: center; margin-top: 10px; }
@@ -616,6 +636,9 @@ canvas {
 
 /* Celular pequeno */
 @media (max-width: 480px) {
+    canvas { height: calc(100vh - 65px); }
+    #inventoryUI { padding: 8px 0; gap: 5px; }
+    
     .btn-neon { padding: 10px 30px; font-size: 0.9rem; }
     #hud { padding: 5px 10px; }
     .boss-hp-bar { width: 150px; height: 8px; }
