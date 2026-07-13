@@ -611,6 +611,8 @@ canvas {
     canvas { height: calc(100vh - 70px); }
     #inventoryUI {
         bottom: 0;
+        left: 0;
+        transform: none;
         width: 100vw;
         background: #050510;
         border-top: 2px solid rgba(0, 255, 255, 0.3);
@@ -618,6 +620,7 @@ canvas {
         gap: 8px;
         z-index: 200;
         pointer-events: auto;
+        justify-content: center;
     }
     .inv-slot { width: 45px; height: 45px; font-size: 1.3rem; border-color: rgba(255, 255, 255, 0.2); }
     
