@@ -16,14 +16,14 @@ window.addEventListener('mousedown',e=>{if(e.button===0)mouse.clicking=true;});
 window.addEventListener('mouseup',e=>{if(e.button===0)mouse.clicking=false;});
 
 window.addEventListener('touchmove',e=>{
-    e.preventDefault();
+    if(e.target === canvas) e.preventDefault();
     if(e.touches.length>0){
         mouse.rawX=e.touches[0].clientX;
         mouse.rawY=e.touches[0].clientY;
     }
 }, {passive:false});
 window.addEventListener('touchstart',e=>{
-    e.preventDefault();
+    if(e.target === canvas) e.preventDefault();
     if(e.touches.length>0){
         mouse.rawX=e.touches[0].clientX;
         mouse.rawY=e.touches[0].clientY;
@@ -31,7 +31,7 @@ window.addEventListener('touchstart',e=>{
     }
 }, {passive:false});
 window.addEventListener('touchend',e=>{
-    e.preventDefault();
+    if(e.target === canvas) e.preventDefault();
     mouse.clicking=false;
 }, {passive:false});
 
