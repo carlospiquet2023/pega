@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cursor Survival - Sobreviva com seu mouse! 10 fases épicas com bosses insanos. Jogue grátis!">
+    <title>🎮 Cursor Survival - 10 Bosses Épicos!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .btn-reset { border-color: #ff4444 !important; color: #ff4444; }
+        .btn-reset:hover { background: #ff4444 !important; color: white; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Loading Screen (DB Init) -->
+    <div id="loadingScreen" class="screen">
+        <h1 style="color:#00ffff; font-family:'Orbitron', monospace; animation: pulseNearMiss 1s infinite alternate;">CARREGANDO DADOS...</h1>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen hidden">
+        <div class="global-coins-display">
+            💰 <span id="menuCoins">0</span>
+        </div>
+        <div class="menu-buttons">
+            <button id="startBtn" class="btn-neon" onclick="startGame()">
+                <span>JOGAR</span>
+            </button>
+            <button id="shopBtn" class="btn-neon btn-shop" onclick="openShop()">
+                <span>🛒 LOJA</span>
+            </button>
+            <button id="resetBtn" class="btn-neon btn-reset" onclick="confirmReset()">
+                <span style="font-size:0.6em;">❌ RESETAR DADOS</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Phase Intro -->
+    <div id="phaseIntro" class="screen hidden">
+        <div class="phase-intro-box">
+            <p class="phase-num" id="phaseIntroNum">FASE 1</p>
+            <p class="boss-icon" id="phaseIntroIcon">👑</p>
+            <h2 class="boss-name" id="phaseIntroName">Slime Rei</h2>
+            <p class="phase-desc" id="phaseIntroDesc">Derrote o Slime Rei!</p>
+            <p class="phase-hint">Colete ⚔️ para atacar o boss!</p>
+        </div>
+    </div>
+
+    <!-- Boss Warning -->
+    <div id="bossWarning" class="screen hidden">
+        <div class="boss-warning-box">
+            <p class="warning-text">⚠️ BOSS CHEGANDO! ⚠️</p>
+        </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+        <div class="hud-left">
+            <div class="hud-item">
+                <span class="hud-label">FASE</span>
+                <span class="hud-value" id="hudPhase">1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">SCORE</span>
+                <span class="hud-value" id="hudScore">0</span>
+            </div>
+        </div>
+        <div class="hud-center" id="bossHpContainer" style="display:none;">
+            <div class="hud-item">
+                <span class="hud-label" id="bossHpLabel">👑 SLIME REI</span>
+                <div class="boss-hp-bar">
+                    <div class="boss-hp-fill" id="bossHpFill"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hud-right">
+            <div class="hud-item">
+                <span class="hud-label">VIDAS</span>
+                <div id="lives" class="lives-container">
+                    <span class="heart">❤️</span>
+                    <span class="heart">❤️</span>
+                    <span class="heart">❤️</span>
+                </div>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">MOEDAS</span>
+                <span class="hud-value" style="color:#ffdd00" id="hudGlobalCoins">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory UI (HUD bottom) -->
+    <div id="inventoryUI" class="hidden">
+        <div class="inv-slot" id="invSlot1"><span class="inv-key">1</span><span class="inv-icon" id="invIcon1"></span><span class="inv-count" id="invCount1"></span></div>
+        <div class="inv-slot" id="invSlot2"><span class="inv-key">2</span><span class="inv-icon" id="invIcon2"></span><span class="inv-count" id="invCount2"></span></div>
+        <div class="inv-slot" id="invSlot3"><span class="inv-key">3</span><span class="inv-icon" id="invIcon3"></span><span class="inv-count" id="invCount3"></span></div>
+        <div class="inv-slot" id="invSlot4"><span class="inv-key">4</span><span class="inv-icon" id="invIcon4"></span><span class="inv-count" id="invCount4"></span></div>
+        <div class="inv-slot" id="invSlot5"><span class="inv-key">5</span><span class="inv-icon" id="invIcon5"></span><span class="inv-count" id="invCount5"></span></div>
+        <div class="inv-slot" id="invSlot6"><span class="inv-key">6</span><span class="inv-icon" id="invIcon6"></span><span class="inv-count" id="invCount6"></span></div>
+    </div>
+
+    <!-- Phase Complete -->
+    <div id="phaseComplete" class="screen hidden">
+        <div class="phase-complete-box">
+            <p class="complete-title">🎉 FASE COMPLETA!</p>
+            <p class="complete-boss" id="completeBossName">👑 Slime Rei derrotado!</p>
+            <div class="complete-stats">
+                <div class="stat-row">
+                    <span class="stat-label">SCORE</span>
+                    <span class="stat-value" id="completeScore">0</span>
+                </div>
+            </div>
+            <!-- Ad Placeholder -->
+            <div class="ad-placeholder" id="adBanner">
+                <p>📢 Espaço para Anúncio</p>
+                <p class="ad-sub">Google AdSense</p>
+            </div>
+            <button class="btn-neon btn-next" onclick="nextPhase()">
+                <span>PRÓXIMA FASE ➡️</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victoryScreen" class="screen hidden">
+        <div class="victory-box">
+            <p class="victory-icon">🏆</p>
+            <h1 class="victory-title">VOCÊ VENCEU!</h1>
+            <p class="victory-sub">Todos os 10 bosses foram derrotados!</p>
+            <div class="complete-stats">
+                <div class="stat-row">
+                    <span class="stat-label">SCORE TOTAL</span>
+                    <span class="stat-value" id="victoryScore">0</span>
+                </div>
+            </div>
+            <button class="btn-neon btn-retry" onclick="restartFull()">
+                <span>JOGAR DE NOVO</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="screen hidden">
+        <div class="gameover-container">
+            <h1 class="gameover-title">GAME<br><span class="highlight-red">OVER</span></h1>
+            <p class="near-miss" id="nearMissMsg"></p>
+            <div class="complete-stats">
+                <div class="stat-row">
+                    <span class="stat-label">FASE</span>
+                    <span class="stat-value" id="goPhase">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">SCORE</span>
+                    <span class="stat-value" id="goScore">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">MOEDAS GANHAS</span>
+                    <span class="stat-value" style="color:#ffdd00" id="goCoinsGained">+0</span>
+                </div>
+            </div>
+            <div class="menu-buttons">
+                <button class="btn-neon btn-retry" onclick="restartFull()">
+                    <span>TENTAR DE NOVO</span>
+                </button>
+                <button class="btn-neon btn-shop" onclick="openShop()">
+                    <span>🛒 LOJA</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Screen -->
+    <div id="shopScreen" class="screen hidden">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>🛒 LOJA CLANDESTINA</h2>
+                <div class="global-coins-display">💰 <span id="shopCoins">0</span></div>
+            </div>
+            <div class="shop-items" id="shopItemsContainer">
+                <!-- Items injected via JS -->
+            </div>
+            <button class="btn-neon btn-retry" onclick="closeShop()">FECHAR (ESC)</button>
+        </div>
+    </div>
+
+    <!-- Daily Bonus Modal -->
+    <div id="dailyModal" class="screen hidden">
+        <div class="daily-box">
+            <h2>🎁 BÔNUS DIÁRIO!</h2>
+            <p id="dailyStreakText">Dia 1 consecutivo</p>
+            <p class="daily-reward" id="dailyRewardText">+50 💰</p>
+            <button class="btn-neon btn-shop" onclick="claimDaily()">RESGATAR</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
